@@ -1,152 +1,234 @@
 <script setup>
 import { useRouter } from 'vue-router'
+import { ref, onMounted } from 'vue'
 
 const router = useRouter()
+const showButton = ref(false)
 
-function enterExperience() {
-  router.push('/rules')
+function beginGame() {
+  router.push('/level-1')
 }
+
+onMounted(() => {
+  setTimeout(() => {
+    showButton.value = true
+  }, 5200)
+})
 </script>
 
 <template>
-  <main class="scene invite">
-    <div class="panel invite-card">
-      <p class="kicker">A Private Birthday Experience</p>
+  <main class="cinema-page">
+    <div class="film-grain"></div>
+    <div class="spotlight"></div>
 
-      <h1>
-        You Are<br />
-        Invited
+    <section class="trailer">
+      <p class="line line-1">Tonight...</p>
+      <p class="line line-2">one birthday</p>
+      <p class="line line-3">one locked gift</p>
+
+      <h1 class="title">
+        The Gift Vault
       </h1>
 
-      <p class="desc">
-        En elegant, personlig och lite mer romantisk start på presentjakten.
+      <p class="subtitle">
+        Unlock sequence begins now.
       </p>
 
-      <div class="signature">for you</div>
-
-      <button class="cta" @click="enterExperience">
-        Enter
+      <button
+        v-if="showButton"
+        @click="beginGame"
+        class="cinema-button"
+      >
+        Begin Unlock Sequence
       </button>
-    </div>
+    </section>
   </main>
 </template>
 
 <style scoped>
-* {
-  box-sizing: border-box;
-}
-
-button {
-  font: inherit;
-  cursor: pointer;
-}
-
-.scene {
+.cinema-page {
   min-height: 100vh;
   display: grid;
   place-items: center;
-  padding: 96px 24px 48px;
+  padding: 32px;
   position: relative;
   overflow: hidden;
+  background: #000;
+  color: white;
 }
 
-.panel {
-  width: min(92vw, 900px);
+.cinema-page::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at center, rgba(70,100,180,0.18), transparent 35%),
+    linear-gradient(180deg, #02040a, #000000 70%);
+}
+
+.film-grain {
+  position: absolute;
+  inset: 0;
+  opacity: 0.08;
+  background-image:
+    repeating-radial-gradient(circle at 30% 30%, white 0, white 1px, transparent 1px, transparent 4px);
+  animation: grain 0.35s steps(2) infinite;
+}
+
+.spotlight {
+  position: absolute;
+  width: 780px;
+  height: 780px;
+  border-radius: 999px;
+  background: radial-gradient(circle, rgba(120,150,255,0.16), transparent 60%);
+  filter: blur(30px);
+  animation: pulse 4s ease-in-out infinite;
+}
+
+.trailer {
   position: relative;
   z-index: 2;
   text-align: center;
 }
 
-.kicker {
-  margin: 0 0 20px;
-  text-transform: uppercase;
-  letter-spacing: .32em;
-  font-size: .72rem;
-  color: rgba(255,255,255,.62);
-}
-
-.desc {
-  max-width: 620px;
-  margin: 28px auto 0;
-  color: rgba(255,255,255,.72);
-  line-height: 1.8;
-  font-size: 1.05rem;
-}
-
-.cta {
-  margin-top: 38px;
-  padding: 17px 34px;
-  border-radius: 999px;
-  border: 1px solid rgba(255,255,255,.14);
-  color: white;
-  background: rgba(255,255,255,.08);
-  transition: .28s ease;
-}
-
-.cta:hover {
-  transform: translateY(-3px) scale(1.02);
-}
-
-.invite {
-  background:
-    radial-gradient(circle at 50% 0%, rgba(255,255,255,.08), transparent 28%),
-    linear-gradient(135deg, #080b12, #121620, #070910);
-}
-
-.invite-card {
-  width: min(92vw, 720px);
-  padding: 74px 58px;
-  border-radius: 12px;
-  background: rgba(255,255,255,.96);
-  color: #10131a;
-  box-shadow: 0 50px 140px rgba(0,0,0,.6);
-  animation: envelope .9s ease both;
-}
-
-.invite .kicker {
-  color: rgba(16,19,26,.45);
-}
-
-.invite h1 {
+.line {
   margin: 0;
-  font-family: Didot, Georgia, serif;
-  font-size: clamp(3.8rem, 10vw, 7.5rem);
+  opacity: 0;
+  font-size: clamp(1.8rem, 6vw, 4.8rem);
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.line-1 {
+  animation: trailerLine 1.1s ease forwards;
+}
+
+.line-2 {
+  animation: trailerLine 1.1s ease forwards;
+  animation-delay: 1.3s;
+}
+
+.line-3 {
+  animation: trailerLine 1.1s ease forwards;
+  animation-delay: 2.6s;
+}
+
+.title {
+  margin: 34px 0 0;
+  opacity: 0;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: clamp(4rem, 13vw, 9rem);
   font-weight: 400;
-  line-height: .92;
-  letter-spacing: -.08em;
+  line-height: 0.85;
+  letter-spacing: -0.08em;
+
+  background: linear-gradient(180deg, #ffffff, #9fb3ff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+
+  animation: titleReveal 1.4s ease forwards;
+  animation-delay: 3.9s;
 }
 
-.invite .desc {
-  color: rgba(16,19,26,.65);
+.subtitle {
+  margin-top: 28px;
+  opacity: 0;
+  color: rgba(255,255,255,0.62);
+  font-size: 1rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+
+  animation: fadeIn 1s ease forwards;
+  animation-delay: 4.7s;
 }
 
-.signature {
-  margin-top: 32px;
-  font-family: cursive;
-  font-size: 2rem;
-  color: rgba(16,19,26,.72);
-}
-
-.invite .cta {
+.cinema-button {
+  margin-top: 46px;
+  padding: 18px 42px;
+  border-radius: 999px;
+  border: 1px solid rgba(200,215,255,0.24);
+  background: rgba(255,255,255,0.08);
   color: white;
-  background: #10131a;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  cursor: pointer;
+  animation: buttonIn 0.8s ease forwards;
 }
 
-@keyframes envelope {
+.cinema-button:hover {
+  transform: translateY(-3px);
+  background: rgba(120,155,255,0.18);
+  box-shadow: 0 24px 70px rgba(70,110,255,0.24);
+}
+
+@keyframes trailerLine {
+  0% {
+    opacity: 0;
+    transform: scale(1.08);
+    filter: blur(8px);
+  }
+
+  20% {
+    opacity: 1;
+    transform: scale(1);
+    filter: blur(0);
+  }
+
+  80% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+    transform: scale(0.98);
+  }
+}
+
+@keyframes titleReveal {
   from {
     opacity: 0;
-    transform: translateY(40px) rotateX(10deg);
+    transform: scale(1.18);
+    filter: blur(16px);
   }
 
   to {
     opacity: 1;
-    transform: none;
+    transform: scale(1);
+    filter: blur(0);
   }
 }
 
-@media (max-width: 760px) {
-  .invite-card {
-    padding: 42px 24px;
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes buttonIn {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse {
+  50% {
+    transform: scale(1.08);
+    opacity: 0.75;
+  }
+}
+
+@keyframes grain {
+  50% {
+    transform: translate(2px, -2px);
   }
 }
 </style>

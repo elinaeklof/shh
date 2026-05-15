@@ -652,7 +652,6 @@ animationCanvas.style.pointerEvents = 'none'
 canvasEl.style.position = 'absolute'
 canvasEl.style.top = '0'
 canvasEl.style.left = '0'
-
 canvasEl.style.width = `${width}px`
 canvasEl.style.height = `${height}px`
 canvasEl.style.zIndex = '1'
