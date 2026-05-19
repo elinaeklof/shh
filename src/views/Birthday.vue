@@ -23,7 +23,7 @@ onMounted(() => {
 
     <section class="trailer">
       <p class="line line-1">Tonight...</p>
-      <p class="line line-2">one birthday</p>
+      <p class="line line-2">one birthday & graduation</p>
       <p class="line line-3">one locked gift</p>
 
       <h1 class="title">

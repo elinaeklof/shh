@@ -1,6 +1,14 @@
 <script setup>
 import { ref, onMounted, onBeforeUnmount } from 'vue'
+import { useRouter } from 'vue-router'
 import faceSrc from '../assets/img/RichardEat.png'
+
+const router = useRouter()
+const showButton = ref(false)
+
+function beginGame() {
+  router.push('/level-2')
+}
 
 const canvasRef = ref(null)
 const gameComplete = ref(false)

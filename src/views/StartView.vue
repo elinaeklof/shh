@@ -7,6 +7,10 @@ const router = useRouter()
 const envelopeOpen = ref(false)
 const showInviteCard = ref(false)
 
+function beginGame() {
+  router.push('/')
+}
+
 function openEnvelope() {
   if (envelopeOpen.value) return
 
@@ -406,7 +410,7 @@ onBeforeUnmount(() => {
     </svg>
 
     <div class="doodle-caption">
-      <p>some birthday wisdom before we continue</p>
+      <p>Först lite uppskattning</p>
     </div>
   </div>
 </section>
@@ -448,8 +452,8 @@ onBeforeUnmount(() => {
         </h1>
 
         <p class="desc">
-          En exklusiv upplevelse har skapats endast för dig.
-          Bakom nästa dörr väntar början på något hemligt.
+          En upplevelse har skapats endast för dig, och bara DU kan lösa den. <br>
+          Tryck på knappen för att ge det ett försök.
         </p>
 
         <div class="signature">for you</div>
