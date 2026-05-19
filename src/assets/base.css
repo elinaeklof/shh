@@ -22,3 +22,16 @@ input {
 button {
   cursor: pointer;
 }
+
+html,
+body,
+#app {
+  width: 100%;
+  min-height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+body {
+  position: static;
+}
