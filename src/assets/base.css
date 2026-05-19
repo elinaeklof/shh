@@ -26,12 +26,10 @@ button {
 html,
 body,
 #app {
-  width: 100%;
-  min-height: 100%;
-  overflow-y: auto;
+  overflow-y: auto !important;
   overflow-x: hidden;
 }
 
 body {
-  position: static;
+  position: static !important;
 }
