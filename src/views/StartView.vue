@@ -482,7 +482,7 @@ onBeforeUnmount(() => {
 .birthday-hero {
   min-height: 100vh;
   position: relative;
-  overflow: hidden;
+  overflow: auto;
   display: grid;
   place-items: center;
 
