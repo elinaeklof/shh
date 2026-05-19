@@ -806,7 +806,7 @@ onBeforeUnmount(() => {
   aspect-ratio: 550 / 366.667;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -50%);
+  transform: translate(0, -50%);
   transform-style: preserve-3d;
   transform-origin: right center;
   cursor: pointer;
