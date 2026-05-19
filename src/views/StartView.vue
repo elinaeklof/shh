@@ -544,7 +544,7 @@ onBeforeUnmount(() => {
 .cake-section {
   min-height: 100vh;
   position: relative;
-  overflow: hidden;
+  overflow: auto;
   display: grid;
   place-items: center;
 
@@ -603,7 +603,7 @@ onBeforeUnmount(() => {
   position: relative;
   display: grid;
   place-items: center;
-  overflow: hidden;
+  overflow: auto;
   padding: 80px 24px;
   background:
     radial-gradient(circle at top, rgba(90, 120, 210, 0.12), transparent 30%),
@@ -642,7 +642,7 @@ onBeforeUnmount(() => {
     0 60px 140px rgba(0,0,0,0.65),
     inset 0 1px 0 rgba(255,255,255,0.12);
 
-  overflow: hidden;
+  overflow: auto;
 
   animation: doodleCardIn 1.4s ease both;
 }
@@ -786,7 +786,7 @@ onBeforeUnmount(() => {
   padding: 96px 24px 48px;
 
   position: relative;
-  overflow: hidden;
+  overflow: auto;
 }
 
 .invite {
