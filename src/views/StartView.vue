@@ -482,7 +482,7 @@ onBeforeUnmount(() => {
 .birthday-hero {
   min-height: 100vh;
   position: relative;
-  overflow: auto;
+  overflow: hidden;
   display: grid;
   place-items: center;
 
@@ -544,7 +544,7 @@ onBeforeUnmount(() => {
 .cake-section {
   min-height: 100vh;
   position: relative;
-  overflow: auto;
+  overflow: hidden;
   display: grid;
   place-items: center;
 
@@ -603,7 +603,7 @@ onBeforeUnmount(() => {
   position: relative;
   display: grid;
   place-items: center;
-  overflow: auto;
+  overflow: hidden;
   padding: 80px 24px;
   background:
     radial-gradient(circle at top, rgba(90, 120, 210, 0.12), transparent 30%),
@@ -642,7 +642,7 @@ onBeforeUnmount(() => {
     0 60px 140px rgba(0,0,0,0.65),
     inset 0 1px 0 rgba(255,255,255,0.12);
 
-  overflow: auto;
+  overflow: hidden;
 
   animation: doodleCardIn 1.4s ease both;
 }
@@ -786,7 +786,7 @@ onBeforeUnmount(() => {
   padding: 96px 24px 48px;
 
   position: relative;
-  overflow: auto;
+  overflow: hidden;
 }
 
 .invite {
@@ -1137,5 +1137,13 @@ onBeforeUnmount(() => {
       transform: rotateY(-180deg) scale(.92);
     }
   }
+}
+
+.start-view {
+  min-height: 100vh;
+  background: #05070d;
+  color: white;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 </style>
