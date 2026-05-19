@@ -83,7 +83,9 @@ html,
 body,
 #app {
   overflow-y: auto !important;
-  overflow-x: hidden !important;
+  overflow-x: clip !important;  
+  width: 100%;
+  min-height: 100vh;
 }
 
 body {

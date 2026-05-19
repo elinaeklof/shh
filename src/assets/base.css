@@ -23,13 +23,3 @@ button {
   cursor: pointer;
 }
 
-html,
-body,
-#app {
-  overflow-y: auto !important;
-  overflow-x: hidden;
-}
-
-body {
-  position: static !important;
-}

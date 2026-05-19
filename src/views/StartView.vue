@@ -416,53 +416,56 @@ onBeforeUnmount(() => {
 </section>
 
     <!-- INVITE -->
-    <section class="scene invite">
-      <!-- ENVELOPE -->
-      <div
-        v-if="!showInviteCard"
-        class="envelope"
-        :class="{ new: !envelopeOpen, open: envelopeOpen }"
-        @click="openEnvelope"
-      >
-        <div class="front">
-          <div class="mail">
-            <p>Richard 25</p>
-            <p>click to open</p>
-          </div>
-        </div>
-
-        <div class="back">
-          <div class="flip top-flip"></div>
-          <div class="flip bottom-flip"></div>
-          <div class="flip left-flip"></div>
-          <div class="flip right-flip"></div>
+  <section class="birthday-invite-section">
+    <!-- ENVELOPE -->
+    <div
+      v-if="!showInviteCard"
+      class="birthday-invite-envelope"
+      :class="{
+        'birthday-invite-envelope--new': !envelopeOpen,
+        'birthday-invite-envelope--open': envelopeOpen
+      }"
+      @click="openEnvelope"
+    >
+      <div class="birthday-invite-envelope-front">
+        <div class="birthday-invite-mail">
+          <p>Richard 25</p>
+          <p>click to open</p>
         </div>
       </div>
 
-      <!-- ORIGINAL INVITE CARD -->
-      <div
-        v-else
-        class="panel invite-card invite-card-reveal"
-      >
-        <p class="kicker">A Private Birthday Experience</p>
-
-        <h1>
-          You Are<br />
-          Invited
-        </h1>
-
-        <p class="desc">
-          En upplevelse har skapats endast för dig, och bara DU kan lösa den. <br>
-          Tryck på knappen för att ge det ett försök.
-        </p>
-
-        <div class="signature">for you</div>
-
-        <button class="cta" @click="enterExperience">
-          Enter
-        </button>
+      <div class="birthday-invite-envelope-back">
+        <div class="birthday-invite-flip birthday-invite-top-flip"></div>
+        <div class="birthday-invite-flip birthday-invite-bottom-flip"></div>
+        <div class="birthday-invite-flip birthday-invite-left-flip"></div>
+        <div class="birthday-invite-flip birthday-invite-right-flip"></div>
       </div>
-    </section>
+    </div>
+
+    <!-- ORIGINAL INVITE CARD -->
+    <div
+      v-else
+      class="birthday-invite-panel birthday-invite-card birthday-invite-card-reveal"
+    >
+      <p class="birthday-invite-kicker">A Private Birthday Experience</p>
+
+      <h1>
+        You Are<br />
+        Invited
+      </h1>
+
+      <p class="birthday-invite-desc">
+        En upplevelse har skapats endast för dig, och bara DU kan lösa den. <br>
+        Tryck på knappen för att ge det ett försök.
+      </p>
+
+      <div class="birthday-invite-signature">for you</div>
+
+      <button class="birthday-invite-cta" @click="enterExperience">
+        Enter
+      </button>
+    </div>
+  </section>
   </main>
 </template>
 
@@ -779,17 +782,17 @@ onBeforeUnmount(() => {
 
 /* INVITE */
 
-.scene {
-  min-height: 100vh;
+.birthday-invite-section {
+  min-height: 100svh;
+  height: 100vh;
   display: grid;
   place-items: center;
   padding: 96px 24px 48px;
 
   position: relative;
-  overflow: hidden;
 }
 
-.invite {
+.birthday-invite-section {
   background:
     radial-gradient(circle at 50% 0%, rgba(255,255,255,.08), transparent 28%),
     linear-gradient(135deg, #080b12, #121620, #070910);
@@ -799,22 +802,22 @@ onBeforeUnmount(() => {
 
 /* ENVELOPE */
 
-.envelope {
+.birthday-invite-envelope {
   z-index: 2;
   position: absolute;
   width: min(86vw, 550px);
   aspect-ratio: 550 / 366.667;
   top: 50%;
   left: 50%;
-  transform: translate(0, -50%);
+  transform: translate(-50%, -50%);
   transform-style: preserve-3d;
   transform-origin: right center;
   cursor: pointer;
   font-family: Georgia, serif;
 }
 
-.envelope .front,
-.envelope .back {
+.birthday-invite-envelope-front,
+.birthday-invite-envelope-back {
   position: absolute;
   inset: 0;
   width: 100%;
@@ -823,49 +826,49 @@ onBeforeUnmount(() => {
   border-radius: 5px;
 }
 
-.envelope .front {
+.birthday-invite-envelope-front {
   backface-visibility: hidden;
   display: grid;
   place-items: center;
   z-index: 10;
 }
 
-.envelope .back {
+.birthday-invite-envelope-back {
   backface-visibility: hidden;
   transform: rotateY(180deg) translate3d(0, 0, 1px);
 }
 
 /* FLAPS */
-.flip {
+.birthday-invite-flip {
   position: absolute;
   width: 100%;
   height: 100%;
   overflow: hidden;
 }
 
-.flip::before {
+.birthday-invite-flip::before {
   content: "";
   position: absolute;
   background-color: #fff;
 }
 
-.top-flip,
-.bottom-flip {
+.birthday-invite-top-flip,
+.birthday-invite-bottom-flip {
   /* nothing extra */
 }
 
-.top-flip::before,
-.bottom-flip::before {
+.birthday-invite-top-flip::before,
+.birthday-invite-bottom-flip::before {
   width: 388.9px;
   height: 388.9px;
 }
 
-.top-flip {
+.birthday-invite-top-flip {
   z-index: 5;
   transform-origin: top center;
 }
 
-.top-flip::before {
+.birthday-invite-top-flip::before {
   transform-origin: top left;
   transform: rotate(-45deg);
   border-bottom-left-radius: 50px;
@@ -873,11 +876,11 @@ onBeforeUnmount(() => {
   border-bottom-right-radius: 10px;
 }
 
-.bottom-flip {
+.birthday-invite-bottom-flip {
   z-index: 4;
 }
 
-.bottom-flip::before {
+.birthday-invite-bottom-flip::before {
   transform-origin: left bottom;
   transform: rotate(45deg) translate(-15px, -15px);
   border-top-left-radius: 100px;
@@ -885,18 +888,18 @@ onBeforeUnmount(() => {
   border-top-right-radius: 10px;
 }
 
-.left-flip::before,
-.right-flip::before {
+.birthday-invite-left-flip::before,
+.birthday-invite-right-flip::before {
   width: 269.3px;
   height: 269.3px;
   top: -5px;
 }
 
-.left-flip {
+.birthday-invite-left-flip {
   z-index: 3;
 }
 
-.left-flip::before {
+.birthday-invite-left-flip::before {
   transform-origin: top left;
   transform: rotate(45deg);
   border-top-left-radius: 20px;
@@ -904,11 +907,11 @@ onBeforeUnmount(() => {
   border-top-right-radius: 5px;
 }
 
-.right-flip {
+.birthday-invite-right-flip {
   z-index: 2;
 }
 
-.right-flip::before {
+.birthday-invite-right-flip::before {
   right: 0;
   transform-origin: top right;
   transform: rotate(-45deg);
@@ -918,11 +921,11 @@ onBeforeUnmount(() => {
 }
 
 /* MAIL TEXT */
-.mail {
+.birthday-invite-mail {
   text-align: center;
 }
 
-.mail p:first-child {
+.birthday-invite-mail p:first-child {
   margin: 0;
   font-family: Didot, Georgia, serif;
   font-size: clamp(2.4rem, 7vw, 4.7rem);
@@ -932,7 +935,7 @@ onBeforeUnmount(() => {
   color: #151111;
 }
 
-.mail p:last-child {
+.birthday-invite-mail p:last-child {
   margin: 18px 0 0;
   text-transform: uppercase;
   letter-spacing: 0.28em;
@@ -940,71 +943,29 @@ onBeforeUnmount(() => {
   color: rgba(16,19,26,0.48);
 }
 
-/* ENVELOPE ANIMATIONS */
-.envelope.new {
-  animation: newEnvelope 1s forwards;
-}
+/* ENVELOPE ANIMATIONS */.envelope.new {animation: newEnvelope 1s forwards;}
 
-.envelope.open {
-  animation: openEnvelope 3s forwards;
-}
+.envelope.open {animation: openEnvelope 3s forwards;}
 
-.envelope.open .top-flip {
-  animation: flipOpen 1s 1s forwards;
-}
+.envelope.open .top-flip {animation: flipOpen 1s 1s forwards;}
 
-@keyframes newEnvelope {
-  0% {
-    left: 0%;
-    margin-left: -100%;
-  }
-  100% {
-    left: 50%;
-    margin-left: 0;
-  }
-}
+@keyframes newEnvelope {0% {left: 0%;margin-left: -100%;}100% {left: 50%;margin-left: 0;}}
 
-@keyframes openEnvelope {
-  0% {
-    transform: translate(-50%, -50%) rotateY(0deg);
-  }
-  33% {
-    transform: translate(-150%, -50%) rotateY(-180deg);
-  }
-  66% {
-    transform: translate(-150%, -50%) rotateY(-180deg);
-  }
-  100% {
-    transform: translate(-150%, 150%) rotateY(-180deg);
-    opacity: 0;
-  }
-}
+@keyframes openEnvelope {0% {transform: translate(-50%, -50%) rotateY(0deg);}33% {transform: translate(-150%, -50%) rotateY(-180deg);}66% {transform: translate(-150%, -50%) rotateY(-180deg);}100% {transform: translate(-150%, 150%) rotateY(-180deg);opacity: 0;}}
 
-@keyframes flipOpen {
-  0% {
-    transform: rotateX(0deg);
-    z-index: 5;
-  }
-  50% {
-    transform: rotateX(0deg);
-    z-index: 5;
-  }
-  100% {
-    transform: rotateX(-180deg);
-    z-index: -1;
-  }
-}
+@keyframes flipOpen {0% {transform: rotateX(0deg);z-index: 5;}50% {transform: rotateX(0deg);z-index: 5;}100% {transform: rotateX(-180deg);z-index: -1;}}
+
 
 /* ORIGINAL INVITE CARD */
 
-.panel {
+.birthday-invite-panel {
   width: min(92vw, 900px);
   position: relative;
   z-index: 2;
   text-align: center;
 }
 
-.invite-card {
+.birthday-invite-card {
   width: min(92vw, 720px);
 
   padding: 74px 58px;
@@ -1017,7 +978,7 @@ onBeforeUnmount(() => {
 
 }
 
-.kicker {
+.birthday-invite-kicker {
   margin: 0 0 20px;
 
   text-transform: uppercase;
@@ -1027,7 +988,7 @@ onBeforeUnmount(() => {
   color: rgba(16,19,26,.45);
 }
 
-.invite h1 {
+.birthday-invite-section h1 {
   margin: 0;
 
   font-family: Didot, Georgia, serif;
@@ -1037,7 +998,7 @@ onBeforeUnmount(() => {
   letter-spacing: -.08em;
 }
 
-.desc {
+.birthday-invite-desc {
   max-width: 620px;
 
   margin: 28px auto 0;
@@ -1048,7 +1009,7 @@ onBeforeUnmount(() => {
   font-size: 1.05rem;
 }
 
-.signature {
+.birthday-invite-signature {
   margin-top: 32px;
 
   font-family: cursive;
@@ -1057,7 +1018,7 @@ onBeforeUnmount(() => {
   color: rgba(16,19,26,.72);
 }
 
-.cta {
+.birthday-invite-cta {
   margin-top: 38px;
 
   padding: 17px 34px;
@@ -1079,19 +1040,19 @@ onBeforeUnmount(() => {
 
 /* ENVELOPE ANIMATION */
 
-.envelope.new {
+.birthday-invite-envelope--new {
   animation: newEnvelope 1s forwards;
 }
 
-.envelope.open {
+.birthday-invite-envelope--open {
   animation: openEnvelope 2.2s forwards;
 }
 
-.envelope.open .top-flip {
+.birthday-invite-envelope--open .birthday-invite-top-flip {
   animation: flipOpen .9s .8s forwards;
 }
 
-.invite-card-reveal {
+.birthday-invite-card-reveal {
   animation: revealInviteCard .8s ease forwards;
 }
 
