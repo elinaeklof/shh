@@ -26,6 +26,7 @@ import MedAndraOrd from '../views/MedAndraOrd.vue'
 import NobelRoom from '../views/NobelRoom.vue'
 import Nudel from '../views/Nudel.vue'
 import Nokia from '../views/Nokia.vue'
+import SevenElevenEscape from '../views/SevenElevenEscape.vue'
 import SushiConveyor from '../views/SushiConveyor.vue' 
 import Rules from '../views/Rules.vue'
 import PacmanSushiRoom from '../views/PacmanSushiRoom.vue'
@@ -111,6 +112,11 @@ const router = createRouter({
     {path: '/level-12',
       name: 'level-12',
       component: BlockEscape,
+    },
+    {
+      path: '/level-13',
+      name: 'level-13',
+      component: SevenElevenEscape,
     },
     {
       path: '/level-14',
