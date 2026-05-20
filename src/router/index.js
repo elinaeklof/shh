@@ -8,6 +8,7 @@ import AlignRoom2 from '../views/AlignRoom2.vue'
 import AntennaRoom from '../views/AntennaRoom.vue'
 import AntiVirus from '../views/AntiVirus.vue'
 import AuroraRoom from '../views/AuroraRoom.vue'
+import BatBar from '../views/BatBar.vue'
 import BlockEscape from '../views/BlockEscape.vue'
 import ChefAITrainingSimulator from '../views/ChefAITrainingSimulator.vue'
 import ElinaHappy from '../views/ElinaHappy.vue'
@@ -27,6 +28,7 @@ import NobelRoom from '../views/NobelRoom.vue'
 import Nudel from '../views/Nudel.vue'
 import Nokia from '../views/Nokia.vue'
 import SevenElevenEscape from '../views/SevenElevenEscape.vue'
+import Stjarnvaktaren from '../views/Stjarnvaktaren.vue'
 import SushiConveyor from '../views/SushiConveyor.vue' 
 import Rules from '../views/Rules.vue'
 import PacmanSushiRoom from '../views/PacmanSushiRoom.vue'
@@ -138,6 +140,11 @@ const router = createRouter({
       name: 'level-17',
       component: SushiConveyor,
     },
+    {
+      path: '/level-18',
+      name: 'level-18',
+      component: Stjarnvaktaren,
+    },
     { 
       path: '/level-19',
       name: 'level-19',
@@ -147,6 +154,11 @@ const router = createRouter({
       path: '/level-20',
       name: 'level-20',
       component: NobelRoom,
+    },
+    {
+      path: '/level-21',
+      name: 'level-21',
+      component: BatBar,
     },
       {
       path: '/level-22',
