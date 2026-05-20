@@ -22,9 +22,9 @@ onMounted(() => {
     <div class="spotlight"></div>
 
     <section class="trailer">
-      <p class="line line-1">Tonight...</p>
-      <p class="line line-2">one birthday</p>
-      <p class="line line-3">one locked gift</p>
+      <p class="line line-1">One birthday</p>
+      <p class="line line-2">One graduation</p>
+      <p class="line line-3">15 days</p>
 
       <h1 class="title">
         The Gift Vault
@@ -39,7 +39,7 @@ onMounted(() => {
         @click="beginGame"
         class="cinema-button"
       >
-        Begin Unlock Sequence
+        To the first mystery
       </button>
     </section>
   </main>

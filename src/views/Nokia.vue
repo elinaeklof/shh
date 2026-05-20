@@ -1,439 +1,941 @@
-<script setup>
-import { useRouter } from 'vue-router'
-import { ref, onMounted, onBeforeUnmount } from 'vue'
-
-const router = useRouter()
-const showButton = ref(false)
-
-function beginGame() {
-  router.push('/level-29')
-}
-const canvasRef = ref(null)
-const score = ref(0)
-const level = ref('slow')
-const gameText = ref('PRESS # TO START')
-const clueIndex = ref(0)
-const answer = ref('')
-const feedback = ref('')
-const solved = ref(false)
-const showInstructions = ref(false)
-
-let ctx
-let interval = null
-
-const cell = 12
-const width = 288
-const height = 192
-
-let snake = []
-let apple = { x: 120, y: 84 }
-let direction = 'RIGHT'
-let nextDirection = 'RIGHT'
-let running = false
-
-const clues = [
-  'Ledtråd 1: Vi söker något som ofta räddar en dålig dag.',
-  'Ledtråd 2: Det kan vara runt, fyrkantigt eller hemgjort.',
-  'Ledtråd 3: Det luktar bäst när det kommer direkt från ugnen.',
-  'Ledtråd 4: Italien är starkt misstänkt.',
-  'Ledtråd 5: Det rimmar nästan på “pussa”.'
-]
-
-function drawText(text) {
-  ctx.clearRect(0, 0, width, height)
-  ctx.font = '22px monospace'
-  ctx.fillStyle = '#111'
-  ctx.textAlign = 'center'
-  ctx.fillText(text, width / 2, height / 2)
-}
-
-function resetSnake() {
-  snake = [
-    { x: 60, y: 84 },
-    { x: 48, y: 84 },
-    { x: 36, y: 84 }
-  ]
-
-  direction = 'RIGHT'
-  nextDirection = 'RIGHT'
-  score.value = 0
-  clueIndex.value = 0
-  feedback.value = ''
-  solved.value = false
-  placeApple()
-}
-
-function placeApple() {
-  apple = {
-    x: Math.floor(Math.random() * (width / cell)) * cell,
-    y: Math.floor(Math.random() * (height / cell)) * cell
-  }
-}
-
-function draw() {
-  ctx.clearRect(0, 0, width, height)
-
-  ctx.fillStyle = '#111'
-  snake.forEach(part => {
-    ctx.fillRect(part.x, part.y, cell, cell)
-  })
-
-  ctx.fillStyle = '#111'
-  ctx.fillRect(apple.x, apple.y, cell, cell)
-
-  ctx.font = '12px monospace'
-  ctx.fillText('EAT = CLUE', 58, 14)
-}
-
-function move() {
-  direction = nextDirection
-
-  const head = { ...snake[0] }
-
-  if (direction === 'RIGHT') head.x += cell
-  if (direction === 'LEFT') head.x -= cell
-  if (direction === 'UP') head.y -= cell
-  if (direction === 'DOWN') head.y += cell
-
-  const hitWall =
-    head.x < 0 ||
-    head.x >= width ||
-    head.y < 0 ||
-    head.y >= height
-
-  const hitSelf = snake.some(part => part.x === head.x && part.y === head.y)
-
-  if (hitWall || hitSelf) {
-    gameOver()
-    return
-  }
-
-  snake.unshift(head)
-
-  const ateApple = head.x === apple.x && head.y === apple.y
-
-  if (ateApple) {
-    score.value++
-
-    if (clueIndex.value < clues.length) {
-      clueIndex.value++
-    }
-
-    placeApple()
-  } else {
-    snake.pop()
-  }
-
-  draw()
-}
-
-function startGame() {
-  if (running) return
-
-  resetSnake()
-  running = true
-  gameText.value = ''
-
-  interval = setInterval(move, currentSpeed())
-}
-
-function pauseGame() {
-  if (!running) return
-
-  running = false
-  clearInterval(interval)
-  drawText('PAUSED')
-}
-
-function gameOver() {
-  running = false
-  clearInterval(interval)
-  drawText('GAME OVER')
-}
-
-function currentSpeed() {
-  if (level.value === 'slow') return 180
-  if (level.value === 'medium') return 110
-  return 75
-}
-
-function changeSpeed() {
-  if (level.value === 'slow') level.value = 'medium'
-  else if (level.value === 'medium') level.value = 'fast'
-  else level.value = 'slow'
-
-  if (running) {
-    clearInterval(interval)
-    interval = setInterval(move, currentSpeed())
-  }
-}
-
-function submitAnswer() {
-  const value = answer.value.trim().toLowerCase()
-
-  if (clueIndex.value < 5) {
-    feedback.value = 'Nokian vägrar verifiera innan alla fem ledtrådar är upplåsta.'
-    return
-  }
-
-  if (value === 'pizza') {
-    solved.value = true
-    feedback.value = 'Rätt. Nokia approved. Bokstav: N'
-  } else {
-    feedback.value = 'Fel. Läs ledtrådarna igen.'
-  }
-}
-
-function keyHandler(event) {
-  if (event.key === 'Enter') startGame()
-  if (event.key === ' ') pauseGame()
-  if (event.key === '1') changeSpeed()
-
-  if (event.key === 'ArrowUp' && direction !== 'DOWN') nextDirection = 'UP'
-  if (event.key === 'ArrowDown' && direction !== 'UP') nextDirection = 'DOWN'
-  if (event.key === 'ArrowLeft' && direction !== 'RIGHT') nextDirection = 'LEFT'
-  if (event.key === 'ArrowRight' && direction !== 'LEFT') nextDirection = 'RIGHT'
-}
-
-onMounted(() => {
-  const canvas = canvasRef.value
-  canvas.width = width
-  canvas.height = height
-  ctx = canvas.getContext('2d')
-  drawText('PRESS # TO START')
-  window.addEventListener('keydown', keyHandler)
-})
-
-onBeforeUnmount(() => {
-  clearInterval(interval)
-  window.removeEventListener('keydown', keyHandler)
-})
-</script>
-
 <template>
-  <main class="nokia-room">
-    <p class="top-text">Press * for instructions</p>
+ <main class="game-shell" :class="{ shake: isRinging }">
+   <section class="hero-panel">
+     <div class="noise"></div>
+     <div class="mission-card">
+       <p class="eyebrow">Uppdrag: Kodnamn 3310</p>
+       <h1>Telefonen i ugnen</h1>
+       <p>
+         Du hittar en gammal Nokia i en avstängd ugn. Den vibrerar, blinkar och
+         skickar kryptiska SMS från någon som verkar veta exakt var du är.
+       </p>
 
-    <section class="phone">
-      <div class="screen">
-        <canvas ref="canvasRef"></canvas>
 
-        <div class="stats">
-          <span>score: {{ score }}</span>
-          <span>level: {{ level }}</span>
-        </div>
-      </div>
+       <div class="stats-grid">
+         <div>
+           <span>Steg</span>
+           <strong>{{ stepIndex + 1 }}/{{ steps.length }}</strong>
+         </div>
+         <div>
+           <span>Stress</span>
+           <strong>{{ stress }}%</strong>
+         </div>
+         <div>
+           <span>Status</span>
+           <strong>{{ completed ? 'Klar' : currentStep.tag }}</strong>
+         </div>
+       </div>
+     </div>
 
-      <div v-if="showInstructions" class="instructions">
-        <p>INSTRUCTIONS</p>
-        <ul>
-          <li># / Enter: start</li>
-          <li>0 / Space: pause</li>
-          <li>1: speed</li>
-          <li>2 / ↑: up</li>
-          <li>4 / ←: left</li>
-          <li>6 / →: right</li>
-          <li>8 / ↓: down</li>
-          <li>Eat food to unlock clues.</li>
-        </ul>
-      </div>
 
-      <div class="clue-box">
-        <p class="small">NOKIA TRANSMISSION</p>
+     <aside class="scene-card">
+       <div class="oven">
+         <div class="oven-glow"></div>
+         <div class="phone-in-oven" :class="{ active: phoneFound }">NOKIA</div>
+         <div class="oven-handle"></div>
+       </div>
+       <button v-if="!phoneFound" class="primary-btn" @click="findPhone">
+         Öppna ugnen
+       </button>
+       <button v-else class="primary-btn" @click="triggerDistraction">
+         Slumpa störning
+       </button>
+     </aside>
+   </section>
 
-        <p v-if="clueIndex === 0">
-          Inga ledtrådar upplåsta än.
-        </p>
 
-        <ol v-else>
-          <li
-            v-for="clue in clues.slice(0, clueIndex)"
-            :key="clue"
-          >
-            {{ clue }}
-          </li>
-        </ol>
+   <section class="game-grid">
+     <div class="nokia-wrap">
+       <div class="nokia">
+         <div class="speaker"></div>
+         <div class="screen">
+           <div class="screen-top">
+             <span>Telia</span>
+             <span>{{ battery }}%</span>
+           </div>
 
-        <div class="answer-row">
-          <input
-            v-model="answer"
-            placeholder="Skriv svaret"
-            @keydown.enter="submitAnswer"
-          />
 
-          <button @click="submitAnswer">
-            OK
-          </button>
-        </div>
+           <div v-if="!phoneFound" class="locked-screen">
+             <span class="blink">✹</span>
+             <p>En telefon ligger bakom glaset...</p>
+           </div>
 
-        <p class="feedback">{{ feedback }}</p>
-      </div>
 
-      <div class="buttons">
-        <button @click="changeSpeed">1</button>
-        <button @click="nextDirection = 'UP'">2</button>
-        <button @click="showInstructions = !showInstructions">*</button>
+           <template v-else>
+             <div class="sms-thread" ref="threadRef">
+               <article
+                 v-for="message in visibleMessages"
+                 :key="message.id"
+                 class="bubble"
+                 :class="message.from"
+               >
+                 <span class="sender">{{ message.sender }}</span>
+                 {{ message.text }}
+               </article>
+             </div>
 
-        <button @click="nextDirection = 'LEFT'">4</button>
-        <button @click="pauseGame">0</button>
-        <button @click="nextDirection = 'RIGHT'">6</button>
 
-        <button></button>
-        <button @click="nextDirection = 'DOWN'">8</button>
-        <button @click="startGame">#</button>
-      </div>
-    </section>
+             <div v-if="incomingCall" class="call-overlay">
+               <p>{{ incomingCall.name }} ringer...</p>
+               <div class="call-actions">
+                 <button @click="answerCall">Svara</button>
+                 <button @click="declineCall">Ignorera</button>
+               </div>
+             </div>
+           </template>
+         </div>
 
-    <div v-if="solved" class="reward">
-      ROOM COMPLETE · BOKSTAV: N
-    </div>
-  </main>
+
+         <div class="keypad">
+           <button v-for="key in keys" :key="key">{{ key }}</button>
+         </div>
+       </div>
+     </div>
+
+
+     <div class="mission-panel">
+       <div class="panel-header">
+         <p class="eyebrow">Aktuell ledtråd</p>
+         <h2>{{ currentStep.title }}</h2>
+       </div>
+
+
+       <p class="clue">{{ currentStep.clue }}</p>
+
+
+       <div class="interaction-box">
+         <label :for="'answer-' + stepIndex">Ditt svar</label>
+         <input
+           :id="'answer-' + stepIndex"
+           v-model="answer"
+           :disabled="!phoneFound || completed"
+           :placeholder="currentStep.placeholder"
+           @keydown.enter="submitAnswer"
+         />
+         <button :disabled="!phoneFound || completed" @click="submitAnswer">
+           Skicka SMS
+         </button>
+       </div>
+
+
+       <p v-if="feedback" class="feedback" :class="feedbackType">{{ feedback }}</p>
+
+
+       <div class="inventory">
+         <h3>Ryggsäcken</h3>
+         <div class="items">
+           <span v-for="item in inventory" :key="item">{{ item }}</span>
+           <em v-if="inventory.length === 0">Tom än så länge</em>
+         </div>
+       </div>
+
+
+       <div class="progress-track">
+         <div
+           v-for="(step, index) in steps"
+           :key="step.title"
+           class="dot"
+           :class="{ done: index < stepIndex || completed, current: index === stepIndex && !completed }"
+         ></div>
+       </div>
+     </div>
+   </section>
+
+
+   <transition name="pop">
+     <div v-if="toast" class="toast">{{ toast }}</div>
+   </transition>
+
+
+   <section v-if="completed" class="ending-card">
+     <h2>Uppdraget löst</h2>
+     <p>
+       Du följde SMS-kedjan, duckade störningarna och låste upp sista platsen.
+       Nokia-skärmen blinkar: “Respekt, du klarade det.”
+     </p>
+     <button class="primary-btn" @click="resetGame">Spela igen</button>
+   </section>
+ </main>
 </template>
 
+
+<script setup>
+import { computed, nextTick, ref } from 'vue'
+
+
+const keys = ['1', '2 ABC', '3 DEF', '4 GHI', '5 JKL', '6 MNO', '7 PQRS', '8 TUV', '9 WXYZ', '*', '0', '#']
+
+
+const steps = [
+ {
+   tag: 'Start',
+   title: 'Telefonen vaknar',
+   clue: 'Första SMS: “Ey boss, den låg där värmen brukar bo. Vad hittade du?”',
+   placeholder: 'Skriv föremålet...',
+   answers: ['nokia', 'telefon', 'mobil'],
+   reward: 'Nokia 3310'
+ },
+ {
+   tag: 'Kök',
+   title: 'Koden på kaklet',
+   clue: 'SMS: “Kolla där morsan säger: torka efter dig. Tre blå rutor, en sprucken. Siffran sitter under sprickan.”',
+   placeholder: 'Vilken siffra?',
+   answers: ['7', 'sju'],
+   reward: 'Kakel-kod 7'
+ },
+ {
+   tag: 'Hall',
+   title: 'Skorna pekar vägen',
+   clue: 'SMS: “Gå till dojorna. Den som pekar fel är inte lost, den pekar mot nästa grej.”',
+   placeholder: 'Vilket rum pekar skon mot?',
+   answers: ['förråd', 'forrad', 'skrubben', 'städskåp', 'stadskap'],
+   reward: 'Dammande nyckel'
+ },
+ {
+   tag: 'Kod',
+   title: 'Lås upp lådan',
+   clue: 'SMS: “Lägg ihop kaklets siffra med antal bokstäver i NOKIA. Skriv summan, annars blir det knas.”',
+   placeholder: 'Kodsumma...',
+   answers: ['12', 'tolv'],
+   reward: 'Röd lapp'
+ },
+ {
+   tag: 'Final',
+   title: 'Sista meddelandet',
+   clue: 'SMS: “Röda lappen säger: där ljud blir tyst. Vad är platsen?”',
+   placeholder: 'Skriv platsen...',
+   answers: ['kudde', 'under kudden', 'sängen', 'sang', 'säng'],
+   reward: 'Slutkoordinat'
+ }
+]
+
+
+const distractions = [
+ { name: 'Verisure', text: 'Hej, vi ser aktivitet nära ugnen. Vill du uppgradera larmet?' },
+ { name: 'Elina', text: 'Hallååå, varför svarar du inte? Har du min laddare?' },
+ { name: 'Okänt nummer', text: 'Broder, fel svar ger fel väg. Andas och läs igen.' },
+ { name: 'Pappa', text: 'Stängde du verkligen av ugnen?' }
+]
+
+
+const phoneFound = ref(false)
+const stepIndex = ref(0)
+const answer = ref('')
+const feedback = ref('')
+const feedbackType = ref('')
+const stress = ref(11)
+const battery = ref(83)
+const toast = ref('')
+const incomingCall = ref(null)
+const isRinging = ref(false)
+const completed = ref(false)
+const inventory = ref([])
+const visibleMessages = ref([])
+const threadRef = ref(null)
+const messageId = ref(0)
+
+
+const currentStep = computed(() => steps[stepIndex.value])
+
+
+function normalize(value) {
+ return value
+   .toLowerCase()
+   .trim()
+   .replaceAll('å', 'a')
+   .replaceAll('ä', 'a')
+   .replaceAll('ö', 'o')
+}
+
+
+function addMessage(from, sender, text) {
+ messageId.value += 1
+ visibleMessages.value.push({
+   id: messageId.value,
+   from,
+   sender,
+   text
+ })
+
+
+ nextTick(() => {
+   if (threadRef.value) {
+     threadRef.value.scrollTop = threadRef.value.scrollHeight
+   }
+ })
+}
+
+
+function findPhone() {
+ phoneFound.value = true
+ toast.value = 'Du hittade en Nokia i ugnen.'
+ addMessage('them', 'Okänd', 'Ey, du hitta luren. Svara smart nu, inga mobilspel, bara riktiga ledtrådar.')
+ addMessage('them', 'Okänd', currentStep.value.clue)
+ setTimeout(() => {
+   toast.value = ''
+ }, 2200)
+}
+
+
+function submitAnswer() {
+ if (!answer.value.trim()) return
+
+
+ const playerAnswer = answer.value
+ addMessage('me', 'Du', playerAnswer)
+
+
+ const normalized = normalize(playerAnswer)
+ const correct = currentStep.value.answers.some((item) => normalize(item) === normalized)
+
+
+ if (!correct) {
+   stress.value = Math.min(100, stress.value + 13)
+   battery.value = Math.max(8, battery.value - 4)
+   feedbackType.value = 'bad'
+   feedback.value = 'Fel spår. Läs SMS:et igen och tänk mer bokstavligt.'
+   addMessage('them', 'Okänd', 'Nah, den där var sned. Läs ledtråden igen, bror.')
+   maybeCall()
+   answer.value = ''
+   return
+ }
+
+
+ inventory.value.push(currentStep.value.reward)
+ feedbackType.value = 'good'
+ feedback.value = 'Rätt. Ett nytt SMS trillar in.'
+ addMessage('them', 'Okänd', 'Ait, du är med. Nästa grej kommer nu.')
+ answer.value = ''
+
+
+ if (stepIndex.value === steps.length - 1) {
+   completed.value = true
+   addMessage('them', 'Okänd', 'Respekt. Uppdraget är stängt. Lägg tillbaka luren där ingen letar.')
+   return
+ }
+
+
+ stepIndex.value += 1
+ setTimeout(() => {
+   addMessage('them', 'Okänd', currentStep.value.clue)
+ }, 650)
+ maybeCall()
+}
+
+
+function maybeCall() {
+ if (Math.random() > 0.52) {
+   triggerDistraction()
+ }
+}
+
+
+function triggerDistraction() {
+ if (!phoneFound.value || incomingCall.value) return
+
+
+ const item = distractions[Math.floor(Math.random() * distractions.length)]
+ incomingCall.value = item
+ isRinging.value = true
+ stress.value = Math.min(100, stress.value + 7)
+}
+
+
+function answerCall() {
+ if (!incomingCall.value) return
+
+
+ addMessage('them', incomingCall.value.name, incomingCall.value.text)
+ feedbackType.value = 'bad'
+ feedback.value = 'Du svarade på störningen. Stressen ökade, men ibland finns små ledtrådar där också.'
+ stress.value = Math.min(100, stress.value + 9)
+ incomingCall.value = null
+ isRinging.value = false
+}
+
+
+function declineCall() {
+ addMessage('me', 'Du', 'Avvisar samtal')
+ feedbackType.value = 'good'
+ feedback.value = 'Bra fokus. Alla samtal är inte värda att ta.'
+ stress.value = Math.max(0, stress.value - 5)
+ incomingCall.value = null
+ isRinging.value = false
+}
+
+
+function resetGame() {
+ phoneFound.value = false
+ stepIndex.value = 0
+ answer.value = ''
+ feedback.value = ''
+ feedbackType.value = ''
+ stress.value = 11
+ battery.value = 83
+ toast.value = ''
+ incomingCall.value = null
+ isRinging.value = false
+ completed.value = false
+ inventory.value = []
+ visibleMessages.value = []
+ messageId.value = 0
+}
+</script>
+
+
 <style scoped>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap');
+
+
 * {
-  box-sizing: border-box;
+ box-sizing: border-box;
 }
 
-.nokia-room {
-  min-height: 100vh;
-  display: grid;
-  place-items: center;
-  background: #151515;
-  color: white;
-  font-family: monospace;
+
+.game-shell {
+ min-height: 100vh;
+ padding: 32px;
+ color: #f8fafc;
+ font-family: Inter, system-ui, sans-serif;
+ background:
+   radial-gradient(circle at top left, rgba(34, 197, 94, 0.25), transparent 30%),
+   radial-gradient(circle at bottom right, rgba(59, 130, 246, 0.25), transparent 30%),
+   linear-gradient(135deg, #050816, #111827 50%, #020617);
+ overflow: hidden;
 }
 
-.top-text {
-  margin: 20px 0 0;
-  text-transform: uppercase;
-  letter-spacing: 0.16em;
+
+.noise {
+ position: absolute;
+ inset: 0;
+ opacity: 0.12;
+ pointer-events: none;
+ background-image: repeating-linear-gradient(0deg, transparent 0 2px, rgba(255,255,255,.08) 2px 3px);
 }
 
-.phone {
-  width: 420px;
-  max-width: 92vw;
-  padding: 44px 34px 34px;
-  border-radius: 54px;
-  background:
-    linear-gradient(145deg, #d7d2c4, #77756d);
-  border: 8px solid #333;
-  box-shadow:
-    inset 0 0 30px rgba(255,255,255,0.25),
-    0 40px 120px rgba(0,0,0,0.65);
+
+.hero-panel,
+.game-grid {
+ position: relative;
+ z-index: 1;
+ display: grid;
+ grid-template-columns: minmax(0, 1.25fr) minmax(320px, 0.75fr);
+ gap: 24px;
+ max-width: 1180px;
+ margin: 0 auto 24px;
 }
+
+
+.mission-card,
+.scene-card,
+.mission-panel,
+.ending-card {
+ border: 1px solid rgba(255, 255, 255, 0.12);
+ border-radius: 28px;
+ background: rgba(15, 23, 42, 0.72);
+ box-shadow: 0 24px 80px rgba(0, 0, 0, 0.35);
+ backdrop-filter: blur(18px);
+}
+
+
+.mission-card {
+ padding: 34px;
+ position: relative;
+ overflow: hidden;
+}
+
+
+.eyebrow {
+ margin: 0 0 10px;
+ color: #86efac;
+ font-size: 0.78rem;
+ font-weight: 900;
+ letter-spacing: 0.18em;
+ text-transform: uppercase;
+}
+
+
+h1,
+h2,
+h3,
+p {
+ margin-top: 0;
+}
+
+
+h1 {
+ margin-bottom: 12px;
+ font-size: clamp(2.4rem, 6vw, 5.8rem);
+ line-height: 0.9;
+ letter-spacing: -0.08em;
+}
+
+
+.mission-card p:not(.eyebrow) {
+ max-width: 680px;
+ color: #cbd5e1;
+ font-size: 1.05rem;
+ line-height: 1.7;
+}
+
+
+.stats-grid {
+ display: grid;
+ grid-template-columns: repeat(3, 1fr);
+ gap: 12px;
+ margin-top: 28px;
+}
+
+
+.stats-grid div {
+ padding: 16px;
+ border-radius: 18px;
+ background: rgba(255,255,255,0.08);
+}
+
+
+.stats-grid span {
+ display: block;
+ color: #94a3b8;
+ font-size: 0.75rem;
+}
+
+
+.stats-grid strong {
+ font-size: 1.4rem;
+}
+
+
+.scene-card {
+ display: grid;
+ place-items: center;
+ padding: 26px;
+}
+
+
+.oven {
+ position: relative;
+ width: 270px;
+ height: 220px;
+ margin-bottom: 22px;
+ border: 12px solid #475569;
+ border-radius: 26px;
+ background: linear-gradient(#111827, #020617);
+ box-shadow: inset 0 0 40px rgba(0,0,0,.8);
+}
+
+
+.oven-glow {
+ position: absolute;
+ inset: 28px;
+ border-radius: 22px;
+ background: radial-gradient(circle, rgba(251, 146, 60, .38), transparent 62%);
+ filter: blur(3px);
+}
+
+
+.phone-in-oven {
+ position: absolute;
+ left: 86px;
+ bottom: 42px;
+ width: 94px;
+ height: 46px;
+ display: grid;
+ place-items: center;
+ border-radius: 14px;
+ color: #0f172a;
+ font-size: .7rem;
+ font-weight: 900;
+ background: #a7f3d0;
+ transform: rotate(-12deg) scale(.92);
+ opacity: .45;
+ transition: .4s ease;
+}
+
+
+.phone-in-oven.active {
+ opacity: 1;
+ transform: rotate(-5deg) scale(1.12);
+ box-shadow: 0 0 28px #86efac;
+}
+
+
+.oven-handle {
+ position: absolute;
+ left: 52px;
+ top: 18px;
+ width: 150px;
+ height: 10px;
+ border-radius: 99px;
+ background: #94a3b8;
+}
+
+
+.primary-btn,
+.interaction-box button,
+.call-actions button {
+ border: 0;
+ border-radius: 16px;
+ padding: 13px 18px;
+ color: #04111d;
+ font-weight: 900;
+ background: linear-gradient(135deg, #86efac, #67e8f9);
+ cursor: pointer;
+ box-shadow: 0 12px 30px rgba(34, 197, 94, .25);
+}
+
+
+.game-grid {
+ grid-template-columns: 390px minmax(0, 1fr);
+ align-items: start;
+}
+
+
+.nokia-wrap {
+ display: grid;
+ place-items: center;
+}
+
+
+.nokia {
+ width: 310px;
+ min-height: 610px;
+ padding: 24px 22px;
+ border-radius: 48px 48px 60px 60px;
+ background: linear-gradient(145deg, #1e3a8a, #172554 42%, #0f172a);
+ box-shadow: inset -10px -18px 30px rgba(0,0,0,.35), 0 30px 80px rgba(0,0,0,.45);
+}
+
+
+.speaker {
+ width: 90px;
+ height: 10px;
+ margin: 0 auto 18px;
+ border-radius: 999px;
+ background: #020617;
+}
+
 
 .screen {
-  padding: 18px;
-  border-radius: 22px;
-  background: #9aa487;
-  border: 5px solid #2f332d;
-  color: #111;
+ position: relative;
+ height: 285px;
+ padding: 14px;
+ border: 8px solid #111827;
+ border-radius: 24px;
+ color: #13210f;
+ background: linear-gradient(135deg, #a7f3d0, #bef264);
+ box-shadow: inset 0 0 24px rgba(0,0,0,.34);
+ overflow: hidden;
 }
 
-canvas {
-  width: 100%;
-  image-rendering: pixelated;
-  background: #9aa487;
-  border: 2px solid rgba(0,0,0,0.4);
+
+.screen-top {
+ display: flex;
+ justify-content: space-between;
+ margin-bottom: 10px;
+ font-family: monospace;
+ font-weight: 900;
 }
 
-.stats {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 8px;
-  color: #111;
-  text-transform: uppercase;
+
+.locked-screen {
+ height: 220px;
+ display: grid;
+ place-items: center;
+ text-align: center;
+ font-family: monospace;
+ font-weight: 900;
 }
 
-.instructions {
-  margin-top: 18px;
-  padding: 16px;
-  border-radius: 18px;
-  background: #9aa487;
-  color: #111;
+
+.blink {
+ font-size: 2.2rem;
+ animation: blink 1s infinite;
 }
 
-.instructions ul {
-  margin: 8px 0 0;
-  padding-left: 18px;
+
+.sms-thread {
+ height: 226px;
+ overflow: auto;
+ padding-right: 4px;
 }
 
-.clue-box {
-  margin-top: 18px;
-  padding: 18px;
-  border-radius: 22px;
-  background: rgba(0,0,0,0.28);
+
+.bubble {
+ margin: 8px 0;
+ padding: 9px 10px;
+ border-radius: 12px;
+ font-family: monospace;
+ font-size: .78rem;
+ line-height: 1.35;
+ background: rgba(255,255,255,.5);
 }
 
-.small {
-  margin: 0 0 10px;
-  color: rgba(255,255,255,0.55);
-  letter-spacing: 0.18em;
-  font-size: 0.72rem;
+
+.bubble.me {
+ margin-left: 34px;
+ background: rgba(37, 99, 235, .22);
 }
 
-ol {
-  padding-left: 20px;
-  line-height: 1.6;
+
+.bubble.them {
+ margin-right: 28px;
 }
 
-.answer-row {
-  display: flex;
-  gap: 10px;
-  margin-top: 14px;
+
+.sender {
+ display: block;
+ margin-bottom: 3px;
+ font-size: .66rem;
+ font-weight: 900;
+ opacity: .62;
 }
 
-input {
-  flex: 1;
-  min-width: 0;
-  padding: 12px;
-  border-radius: 999px;
-  border: 0;
-  outline: none;
-  font: inherit;
+
+.call-overlay {
+ position: absolute;
+ inset: 16px;
+ display: grid;
+ place-items: center;
+ padding: 18px;
+ border-radius: 18px;
+ text-align: center;
+ color: white;
+ background: rgba(15, 23, 42, .92);
 }
 
-button {
-  border: 0;
-  border-radius: 999px;
-  background: #222;
-  color: white;
-  font: inherit;
-  cursor: pointer;
+
+.call-actions {
+ display: flex;
+ gap: 10px;
 }
 
-.answer-row button {
-  padding: 0 18px;
+
+.call-actions button:last-child {
+ color: white;
+ background: #ef4444;
 }
 
-.buttons {
-  margin-top: 24px;
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 14px;
+
+.keypad {
+ display: grid;
+ grid-template-columns: repeat(3, 1fr);
+ gap: 10px;
+ margin-top: 24px;
 }
 
-.buttons button {
-  height: 58px;
-  font-size: 1.2rem;
-  background: linear-gradient(#3c3c3c, #181818);
-  border: 2px solid #111;
-  box-shadow: inset 0 2px 4px rgba(255,255,255,0.18);
+
+.keypad button {
+ min-height: 46px;
+ border: 0;
+ border-radius: 16px;
+ color: #dbeafe;
+ font-weight: 900;
+ background: linear-gradient(145deg, #334155, #0f172a);
+ box-shadow: inset 0 -4px 0 rgba(0,0,0,.25);
 }
+
+
+.mission-panel {
+ padding: 28px;
+}
+
+
+.panel-header h2 {
+ margin-bottom: 14px;
+ font-size: 2rem;
+ letter-spacing: -.04em;
+}
+
+
+.clue {
+ padding: 20px;
+ border-radius: 20px;
+ color: #d1fae5;
+ line-height: 1.6;
+ background: rgba(16, 185, 129, .12);
+ border: 1px solid rgba(134, 239, 172, .18);
+}
+
+
+.interaction-box {
+ display: grid;
+ grid-template-columns: 1fr auto;
+ gap: 10px;
+ margin-top: 18px;
+}
+
+
+.interaction-box label {
+ grid-column: 1 / -1;
+ color: #94a3b8;
+ font-weight: 800;
+ font-size: .8rem;
+ text-transform: uppercase;
+ letter-spacing: .12em;
+}
+
+
+.interaction-box input {
+ width: 100%;
+ border: 1px solid rgba(255,255,255,.14);
+ border-radius: 16px;
+ padding: 14px 16px;
+ color: white;
+ outline: none;
+ background: rgba(2, 6, 23, .58);
+}
+
+
+.interaction-box input:focus {
+ border-color: #86efac;
+ box-shadow: 0 0 0 4px rgba(134, 239, 172, .1);
+}
+
 
 .feedback {
-  min-height: 22px;
-  color: #ffe6a7;
+ margin: 18px 0;
+ padding: 14px 16px;
+ border-radius: 16px;
+ font-weight: 800;
 }
 
-.reward {
-  position: fixed;
-  bottom: 28px;
-  padding: 18px 26px;
-  border-radius: 999px;
-  background: rgba(122,235,255,0.12);
-  border: 1px solid rgba(122,235,255,0.3);
-  letter-spacing: 0.16em;
+
+.feedback.good {
+ color: #bbf7d0;
+ background: rgba(34, 197, 94, .16);
+}
+
+
+.feedback.bad {
+ color: #fecaca;
+ background: rgba(239, 68, 68, .16);
+}
+
+
+.inventory {
+ margin-top: 20px;
+ padding: 18px;
+ border-radius: 20px;
+ background: rgba(255,255,255,.06);
+}
+
+
+.items {
+ display: flex;
+ flex-wrap: wrap;
+ gap: 8px;
+}
+
+
+.items span,
+.items em {
+ padding: 8px 10px;
+ border-radius: 999px;
+ color: #dbeafe;
+ font-size: .85rem;
+ background: rgba(59, 130, 246, .22);
+}
+
+
+.progress-track {
+ display: flex;
+ gap: 10px;
+ margin-top: 22px;
+}
+
+
+.dot {
+ height: 10px;
+ flex: 1;
+ border-radius: 999px;
+ background: rgba(255,255,255,.12);
+}
+
+
+.dot.done {
+ background: #86efac;
+}
+
+
+.dot.current {
+ background: #67e8f9;
+ box-shadow: 0 0 22px rgba(103, 232, 249, .55);
+}
+
+
+.toast {
+ position: fixed;
+ right: 24px;
+ bottom: 24px;
+ z-index: 10;
+ padding: 16px 18px;
+ border-radius: 18px;
+ color: #04111d;
+ font-weight: 900;
+ background: #86efac;
+ box-shadow: 0 20px 60px rgba(0,0,0,.35);
+}
+
+
+.ending-card {
+ max-width: 760px;
+ margin: 20px auto 0;
+ padding: 26px;
+ text-align: center;
+}
+
+
+.shake .nokia {
+ animation: shake .18s infinite;
+}
+
+
+.pop-enter-active,
+.pop-leave-active {
+ transition: .25s ease;
+}
+
+
+.pop-enter-from,
+.pop-leave-to {
+ opacity: 0;
+ transform: translateY(12px) scale(.96);
+}
+
+
+@keyframes blink {
+ 50% { opacity: .2; }
+}
+
+
+@keyframes shake {
+ 0%, 100% { transform: translateX(0) rotate(0); }
+ 25% { transform: translateX(-2px) rotate(-1deg); }
+ 75% { transform: translateX(2px) rotate(1deg); }
+}
+
+
+@media (max-width: 900px) {
+ .game-shell {
+   padding: 18px;
+ }
+
+
+ .hero-panel,
+ .game-grid {
+   grid-template-columns: 1fr;
+ }
+
+
+ .stats-grid,
+ .interaction-box {
+   grid-template-columns: 1fr;
+ }
+
+
+ .nokia {
+   width: min(310px, 100%);
+ }
 }
 </style>

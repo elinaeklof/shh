@@ -13,6 +13,7 @@ import ChefAITrainingSimulator from '../views/ChefAITrainingSimulator.vue'
 import ElinaHappy from '../views/ElinaHappy.vue'
 import FogNavigationRoom from '../views/FogNavigationRoom.vue'
 import CipherRoom from '../views/CipherRoom.vue'
+import Hallon from '../views/Hallon.vue'
 import Horald from '../views/Horald.vue'
 import FakeAI from '../views/FakeAI.vue'
 import HangmanRoom from '../views/HangmanRoom.vue'
@@ -117,15 +118,22 @@ const router = createRouter({
       component: LoadingScreen,
     },
     {
+      path: '/level-15',
+      name: 'level-15',
+      component: Hallon,
+    },
+    {
       path: '/level-16',
       name: 'level-16',
       component: ChefAITrainingSimulator,   
     },
-    {path: '/level-17',
+    { 
+      path: '/level-17',
       name: 'level-17',
       component: SushiConveyor,
     },
-    {path: '/level-19',
+    { 
+      path: '/level-19',
       name: 'level-19',
       component: NavigationRoom,
     },

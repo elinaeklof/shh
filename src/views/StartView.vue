@@ -1077,27 +1077,16 @@ onBeforeUnmount(() => {
     font-size: clamp(3.4rem, 15vw, 6rem);
   }
 
-    @keyframes openEnvelope {
-    0% {
-      opacity: 1;
-      transform: rotateY(0deg) scale(1);
-    }
+   .envelope.open {animation: openEnvelope 3s forwards;}
 
-    45% {
-      opacity: 1;
-      transform: rotateY(-180deg) scale(1);
-    }
+.envelope.open .top-flip {animation: flipOpen 1s 1s forwards;}
 
-    75% {
-      opacity: 1;
-      transform: rotateY(-180deg) scale(1);
-    }
+@keyframes newEnvelope {0% {left: 0%;margin-left: -100%;}100% {left: 50%;margin-left: 0;}}
 
-    100% {
-      opacity: 0;
-      transform: rotateY(-180deg) scale(.92);
-    }
-  }
+@keyframes openEnvelope {0% {transform: translate(-50%, -50%) rotateY(0deg);}33% {transform: translate(-150%, -50%) rotateY(-180deg);}66% {transform: translate(-150%, -50%) rotateY(-180deg);}100% {transform: translate(-150%, 150%) rotateY(-180deg);opacity: 0;}}
+
+@keyframes flipOpen {0% {transform: rotateX(0deg);z-index: 5;}50% {transform: rotateX(0deg);z-index: 5;}100% {transform: rotateX(-180deg);z-index: -1;}}
+
 }
 
 .start-view {
