@@ -6,7 +6,7 @@ const router = useRouter()
 const showButton = ref(false)
 
 function beginGame() {
-  router.push('/level-1')
+  router.push('/login')
 }
 
 onMounted(() => {

@@ -5,6 +5,7 @@ import faceSrc from '../assets/img/RichardEat.png'
 
 const router = useRouter()
 const showButton = ref(false)
+const showInfo = ref(false)
 
 function beginGame() {
   router.push('/level-2')
@@ -28,33 +29,72 @@ const player = {
 }
 
 const sushi = []
-const walls = [
-  { x: 230, y: 110, w: 28, h: 300 },
-  { x: 420, y: 0, w: 28, h: 240 },
-  { x: 610, y: 230, w: 28, h: 310 },
-  { x: 120, y: 470, w: 420, h: 28 },
+let walls = []
+const mazeCols = 19
+const mazeRows = 11
+const tile = 72
+const offset = { x: 0, y: 0 }
+
+const maze = [
+  '###################',
+  '#........#........#',
+  '#.###.##.#.##.###.#',
+  '#.................#',
+  '#.###.#.###.#.###.#',
+  '#.....#.....#.....#',
+  '###.#.### ###.#.###',
+  '#...#....P....#...#',
+  '#.#####.#.#.#####.#',
+  '#.................#',
+  '###################',
 ]
 
 function resize() {
   const canvas = canvasRef.value
   canvas.width = window.innerWidth
   canvas.height = window.innerHeight
+
+  offset.x = (canvas.width - mazeCols * tile) / 2
+  offset.y = (canvas.height - mazeRows * tile) / 2
+
+  buildMaze()
+  createSushi()
+}
+
+function buildMaze() {
+  walls = []
+
+  for (let row = 0; row < mazeRows; row++) {
+    for (let col = 0; col < mazeCols; col++) {
+      if (maze[row][col] === '#') {
+        walls.push({
+          x: offset.x + col * tile,
+          y: offset.y + row * tile,
+          w: tile,
+          h: tile,
+        })
+      }
+
+      if (maze[row][col] === 'P') {
+        player.x = offset.x + col * tile + tile / 2
+        player.y = offset.y + row * tile + tile / 2
+      }
+    }
+  }
 }
 
 function createSushi() {
   sushi.length = 0
 
-  for (let y = 100; y < window.innerHeight - 100; y += 95) {
-    for (let x = 100; x < window.innerWidth - 100; x += 110) {
-      const blocked = walls.some((wall) =>
-        x > wall.x - 40 &&
-        x < wall.x + wall.w + 40 &&
-        y > wall.y - 40 &&
-        y < wall.y + wall.h + 40
-      )
-
-      if (!blocked && Math.random() > 0.2) {
-        sushi.push({ x, y, eaten: false, pulse: Math.random() * Math.PI * 2 })
+  for (let row = 0; row < mazeRows; row++) {
+    for (let col = 0; col < mazeCols; col++) {
+      if (maze[row][col] === '.') {
+        sushi.push({
+          x: offset.x + col * tile + tile / 2,
+          y: offset.y + row * tile + tile / 2,
+          eaten: false,
+          pulse: Math.random() * Math.PI * 2,
+        })
       }
     }
   }
@@ -135,11 +175,11 @@ function drawBackground() {
 
 function drawWalls() {
   walls.forEach((wall) => {
-    ctx.fillStyle = 'rgba(255,255,255,0.06)'
-    ctx.strokeStyle = 'rgba(160,190,255,0.18)'
-    ctx.lineWidth = 1
+    ctx.fillStyle = 'rgba(45, 95, 255, 0.18)'
+    ctx.strokeStyle = 'rgba(120, 170, 255, 0.55)'
+    ctx.lineWidth = 3
     ctx.beginPath()
-    ctx.roundRect(wall.x, wall.y, wall.w, wall.h, 14)
+    ctx.roundRect(wall.x + 4, wall.y + 4, wall.w - 8, wall.h - 8, 14)
     ctx.fill()
     ctx.stroke()
   })
@@ -253,7 +293,11 @@ onBeforeUnmount(() => {
   <main class="sushi-room">
     <canvas ref="canvasRef"></canvas>
 
-    <div class="intro-card" v-if="!gameComplete">
+    <button class="info-toggle" @click="showInfo = !showInfo">
+        i
+    </button>
+
+    <div class="intro-card" v-if="showInfo && !gameComplete">
       <p>Escape Room</p>
       <h1>Sushi Chase</h1>
       <span>Ät all sushi för att låsa upp ledtråden</span>
@@ -367,5 +411,27 @@ canvas {
   color: white;
   letter-spacing: 0.18em;
   text-transform: uppercase;
+}
+
+.info-toggle {
+  position: fixed;
+  left: 24px;
+  bottom: 24px;
+  z-index: 5;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  border: 1px solid rgba(255,255,255,0.14);
+  background: rgba(10,12,20,0.88);
+  color: white;
+  font-size: 1.2rem;
+  cursor: pointer;
+  backdrop-filter: blur(20px);
+  transition: 0.2s;
+}
+
+.info-toggle:hover {
+  transform: scale(1.08);
+  background: rgba(255,255,255,0.08);
 }
 </style>

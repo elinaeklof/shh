@@ -7,16 +7,8 @@
 
     <section class="game-card">
       <header class="hero">
-        <div class="premium-pill">
-          <span></span>
-          Limited beige edition
-          <span></span>
-        </div>
-        <p class="eyebrow">Med andra ord</p>
-        <h1>Elina <em>&</em> Richard</h1>
-        <p class="subtitle">
-          Ett elegant ordspel där ni turas om att beskriva ord och skriver svaret i terminalen.
-        </p>
+        <h1>Richard vs Elina</h1>
+        <p class="subtitle">Med andra ord — Richard och Elina edition</p>
       </header>
 
       <section v-if="!gameStarted" class="start-panel">
@@ -26,7 +18,6 @@
             <div class="avatar">E</div>
             <p class="role">Player one</p>
             <h2>Elina</h2>
-            <p>Ger kluriga ledtrådar med lugn, precision och stil.</p>
           </article>
 
           <div class="versus">
@@ -38,7 +29,6 @@
             <div class="avatar">R</div>
             <p class="role">Player two</p>
             <h2>Richard</h2>
-            <p>Beskriver snabbt, smart och ibland perfekt kaosigt.</p>
           </article>
         </div>
 
@@ -88,7 +78,7 @@
             <div class="clue-glow"></div>
             <div class="quote-mark">“</div>
             <p class="speaker-line">{{ currentSpeaker }} säger:</p>
-            <h2>{{ currentClue }}</h2>
+            <h2>{{ currentClue || 'Ingen ledtråd här... improvisera!' }}</h2>
           </article>
 
           <section class="terminal">
@@ -98,7 +88,7 @@
                 <span></span>
                 <span></span>
               </div>
-              <p>premium-terminal · guess-the-word</p>
+              <p>guess-the-word-blue</p>
             </div>
 
             <div ref="terminalBody" class="terminal-body" @click="focusInput">
@@ -112,28 +102,22 @@
               </p>
 
               <form class="terminal-form" @submit.prevent="submitGuess">
-                <span class="prompt">λ</span>
+                <span class="prompt">RichardIvemark@ickPC ~ %</span>
                 <input
                   ref="terminalInput"
                   v-model="guess"
                   :disabled="gameOver"
                   autocomplete="off"
-                  placeholder="skriv ordet här..."
+                  placeholder="skriv ordet/orden här..."
                 />
               </form>
             </div>
           </section>
 
           <div class="actions">
-            <button @click="submitGuess" :disabled="gameOver || !guess.trim()">
-              Gissa
-            </button>
-            <button class="ghost" @click="skipWord" :disabled="gameOver">
-              Passa
-            </button>
-            <button class="ghost" @click="resetGame">
-              Starta om
-            </button>
+            <button @click="submitGuess" :disabled="gameOver || !guess.trim()">Gissa</button>
+            <button class="ghost" @click="skipWord" :disabled="gameOver">Passa</button>
+            <button class="ghost" @click="resetGame">Starta om</button>
           </div>
 
           <div v-if="feedback" class="feedback" :class="feedbackType">
@@ -159,59 +143,59 @@ const players = ['Elina', 'Richard']
 
 const words = [
   {
-    answer: 'banan',
+    answer: 'MAT',
     clues: {
-      Elina: 'Den är gul, böjd och apor hade direkt känt igen den.',
-      Richard: 'En frukt som ofta hamnar i väskan innan träning.'
+      Elina: 'Åhh vad jag gillar dig',
+      Richard: 'Jag älskar mat'
     }
   },
   {
-    answer: 'cykel',
+    answer: 'Nobelinbjudan',
     clues: {
-      Elina: 'Två hjul, styre och man kommer fram utan motor.',
-      Richard: 'Den kan ha korg, ringklocka och punktering när det passar som sämst.'
+      Elina: '',
+      Richard: 'Jag gillar dig och så men...'
     }
   },
   {
-    answer: 'pizza',
+    answer: 'flörta',
     clues: {
-      Elina: 'Rund favoritmat med ost, tomatsås och valfri kaos-topping.',
-      Richard: 'Den kommer ofta i en fyrkantig låda men är själv nästan alltid rund.'
+      Elina: 'Hur lyckas ni få i lavemang i barnens mat?',
+      Richard: ''
     }
   },
   {
-    answer: 'måne',
+    answer: 'Ramlösa',
     clues: {
-      Elina: 'Den syns på natten och hänger där uppe som en lampa.',
-      Richard: 'Astronauter har gått där, men den är inte en planet.'
+      Elina: '',
+      Richard: 'Lyx'
     }
   },
   {
-    answer: 'gitarr',
+    answer: 'pundare',
     clues: {
-      Elina: 'Ett instrument med strängar som passar vid lägereld.',
-      Richard: 'Rockstjärnor håller ofta en sån när de ser coola ut.'
+      Elina: 'Sitter på tåget nu?',
+      Richard: ''
     }
   },
   {
-    answer: 'kaffe',
+    answer: 'Merch',
     clues: {
-      Elina: 'Varm dryck som gör morgonen lite mindre dramatisk.',
-      Richard: 'Svart, brun eller med mjölk — men alltid misstänkt vuxet.'
+      Elina: '',
+      Richard: 'Åhh vilken fin tröja'
     }
   },
   {
-    answer: 'paraply',
+    answer: 'sova',
     clues: {
-      Elina: 'Man fäller upp det när himlen börjar droppa.',
-      Richard: 'Det skyddar håret från regn men vänder sig ibland ut och in.'
+      Elina: 'Bara en sak till',
+      Richard: ''
     }
   },
   {
-    answer: 'glass',
+    answer: 'Sex',
     clues: {
-      Elina: 'Kall dessert som gör sommaren bättre.',
-      Richard: 'Den kan smälta snabbare än man hinner äta den.'
+      Elina: 'FÄRDIG',
+      Richard: 'FÄRDIG'
     }
   }
 ]
@@ -250,7 +234,7 @@ function normalize(text) {
     .trim()
     .toLowerCase()
     .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[̀-ͯ]/g, '')
 }
 
 function submitGuess() {
@@ -347,11 +331,11 @@ function scrollTerminal() {
   display: grid;
   place-items: center;
   padding: 36px;
-  color: #38291d;
+  color: #10233f;
   background:
-    radial-gradient(circle at 18% 8%, rgba(255, 255, 255, 0.92), transparent 31%),
-    radial-gradient(circle at 82% 90%, rgba(120, 78, 41, 0.24), transparent 34%),
-    linear-gradient(135deg, #fbf1df 0%, #e6cfaf 48%, #cda16f 100%);
+    radial-gradient(circle at 18% 8%, rgba(219, 238, 255, 0.95), transparent 31%),
+    radial-gradient(circle at 82% 90%, rgba(14, 116, 144, 0.28), transparent 34%),
+    linear-gradient(135deg, #eff8ff 0%, #b8dcff 46%, #3b82f6 100%);
   font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
@@ -359,10 +343,10 @@ function scrollTerminal() {
   position: absolute;
   inset: 0;
   pointer-events: none;
-  opacity: 0.12;
+  opacity: 0.13;
   background-image:
-    linear-gradient(rgba(70, 46, 25, 0.12) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(70, 46, 25, 0.1) 1px, transparent 1px);
+    linear-gradient(rgba(15, 76, 129, 0.15) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(15, 76, 129, 0.12) 1px, transparent 1px);
   background-size: 42px 42px;
   mask-image: radial-gradient(circle, black, transparent 78%);
 }
@@ -371,7 +355,7 @@ function scrollTerminal() {
   position: absolute;
   border-radius: 999px;
   filter: blur(4px);
-  opacity: 0.75;
+  opacity: 0.78;
   animation: float 10s ease-in-out infinite;
 }
 
@@ -380,7 +364,7 @@ function scrollTerminal() {
   height: 390px;
   top: -130px;
   left: -90px;
-  background: rgba(255, 255, 255, 0.58);
+  background: rgba(224, 242, 254, 0.72);
 }
 
 .orb-two {
@@ -388,7 +372,7 @@ function scrollTerminal() {
   height: 460px;
   right: -150px;
   bottom: -160px;
-  background: rgba(124, 78, 38, 0.24);
+  background: rgba(37, 99, 235, 0.28);
   animation-delay: -3s;
 }
 
@@ -397,7 +381,7 @@ function scrollTerminal() {
   height: 220px;
   left: 62%;
   top: 6%;
-  background: rgba(255, 238, 210, 0.52);
+  background: rgba(125, 211, 252, 0.5);
   animation-delay: -6s;
 }
 
@@ -410,14 +394,14 @@ function scrollTerminal() {
   position: relative;
   width: min(1180px, 100%);
   padding: 30px;
-  border: 1px solid rgba(103, 70, 39, 0.2);
+  border: 1px solid rgba(59, 130, 246, 0.25);
   border-radius: 42px;
   background:
-    linear-gradient(145deg, rgba(255, 252, 244, 0.88), rgba(244, 224, 196, 0.66));
+    linear-gradient(145deg, rgba(255, 255, 255, 0.9), rgba(219, 234, 254, 0.7));
   box-shadow:
-    0 38px 100px rgba(74, 45, 20, 0.25),
+    0 38px 100px rgba(15, 63, 120, 0.28),
     inset 0 1px 0 rgba(255, 255, 255, 0.95),
-    inset 0 -1px 0 rgba(111, 73, 39, 0.08);
+    inset 0 -1px 0 rgba(30, 64, 175, 0.08);
   backdrop-filter: blur(24px) saturate(1.15);
 }
 
@@ -426,7 +410,7 @@ function scrollTerminal() {
   position: absolute;
   inset: 12px;
   border-radius: 34px;
-  border: 1px solid rgba(255, 255, 255, 0.52);
+  border: 1px solid rgba(255, 255, 255, 0.58);
   pointer-events: none;
 }
 
@@ -436,39 +420,6 @@ function scrollTerminal() {
   margin-bottom: 30px;
 }
 
-.premium-pill {
-  width: fit-content;
-  margin: 0 auto 16px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 8px 14px;
-  border: 1px solid rgba(132, 88, 47, 0.22);
-  border-radius: 999px;
-  color: #8a5b35;
-  background: rgba(255, 248, 236, 0.68);
-  box-shadow: inset 0 1px rgba(255, 255, 255, 0.8);
-  text-transform: uppercase;
-  letter-spacing: 0.18em;
-  font-size: 0.67rem;
-  font-weight: 900;
-}
-
-.premium-pill span {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: #9d6a3d;
-}
-
-.eyebrow {
-  margin: 0 0 8px;
-  text-transform: uppercase;
-  letter-spacing: 0.24em;
-  font-size: 0.78rem;
-  font-weight: 900;
-  color: #9a683c;
-}
 
 h1 {
   margin: 0;
@@ -476,19 +427,14 @@ h1 {
   font-size: clamp(3.2rem, 8.5vw, 7.4rem);
   line-height: 0.88;
   letter-spacing: -0.085em;
-  color: #412c1f;
-  text-shadow: 0 16px 44px rgba(72, 45, 24, 0.18);
-}
-
-h1 em {
-  font-style: italic;
-  color: #a36b3c;
+  color: #0f2f5f;
+  text-shadow: 0 16px 44px rgba(37, 99, 235, 0.18);
 }
 
 .subtitle {
   max-width: 650px;
   margin: 20px auto 0;
-  color: #71543b;
+  color: #31506f;
   font-size: 1.08rem;
   line-height: 1.7;
 }
@@ -515,11 +461,11 @@ h1 em {
   padding: 32px;
   border-radius: 34px;
   background:
-    linear-gradient(145deg, rgba(255, 251, 243, 0.94), rgba(231, 199, 158, 0.7));
-  border: 1px solid rgba(97, 64, 35, 0.16);
+    linear-gradient(145deg, rgba(255, 255, 255, 0.96), rgba(191, 219, 254, 0.72));
+  border: 1px solid rgba(59, 130, 246, 0.2);
   box-shadow:
     inset 0 1px rgba(255, 255, 255, 0.95),
-    0 22px 54px rgba(82, 52, 25, 0.16);
+    0 22px 54px rgba(37, 99, 235, 0.16);
   text-align: center;
   transition: transform 0.28s ease, box-shadow 0.28s ease;
 }
@@ -528,7 +474,7 @@ h1 em {
   transform: translateY(-6px);
   box-shadow:
     inset 0 1px rgba(255, 255, 255, 0.95),
-    0 32px 72px rgba(82, 52, 25, 0.22);
+    0 32px 72px rgba(37, 99, 235, 0.24);
 }
 
 .shine {
@@ -537,7 +483,7 @@ h1 em {
   width: 70%;
   height: 180%;
   transform: rotate(24deg);
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.38), transparent);
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.48), transparent);
 }
 
 .player-card .avatar,
@@ -549,11 +495,11 @@ h1 em {
   width: 98px;
   height: 98px;
   border-radius: 32px;
-  color: #fff7e8;
+  color: #eff6ff;
   background:
-    linear-gradient(145deg, #6f4527, #c28a50 55%, #f2cf91);
+    linear-gradient(145deg, #0f172a, #1d4ed8 52%, #38bdf8);
   box-shadow:
-    0 18px 32px rgba(85, 55, 28, 0.24),
+    0 18px 32px rgba(30, 64, 175, 0.25),
     inset 0 1px rgba(255, 255, 255, 0.42);
   font-size: 2.8rem;
   font-weight: 950;
@@ -564,7 +510,7 @@ h1 em {
   text-transform: uppercase;
   letter-spacing: 0.16em;
   font-size: 0.7rem;
-  color: #9b6a3e !important;
+  color: #2563eb !important;
   font-weight: 900;
 }
 
@@ -579,7 +525,7 @@ h1 em {
 .player-card p,
 .current-player p {
   margin: 10px 0 0;
-  color: #765941;
+  color: #31506f;
   line-height: 1.6;
 }
 
@@ -591,11 +537,11 @@ h1 em {
   height: 82px;
   border-radius: 50%;
   background:
-    linear-gradient(145deg, #2f2117, #654127);
-  color: #fff3de;
+    linear-gradient(145deg, #0f172a, #1d4ed8);
+  color: #eff6ff;
   font-weight: 950;
   box-shadow:
-    0 20px 42px rgba(72, 45, 24, 0.28),
+    0 20px 42px rgba(30, 64, 175, 0.3),
     inset 0 1px rgba(255, 255, 255, 0.24);
 }
 
@@ -605,7 +551,7 @@ h1 em {
   width: 62px;
   height: 62px;
   border-radius: 50%;
-  border: 1px solid rgba(255, 241, 217, 0.26);
+  border: 1px solid rgba(224, 242, 254, 0.32);
 }
 
 .primary-button,
@@ -616,13 +562,13 @@ h1 em {
   border-radius: 999px;
   padding: 16px 28px;
   cursor: pointer;
-  color: #fff7e9;
+  color: #eff6ff;
   background:
-    linear-gradient(135deg, #51331f, #a36a3b 52%, #d8a365);
+    linear-gradient(135deg, #0f172a, #2563eb 52%, #38bdf8);
   font-weight: 900;
   font-size: 1rem;
   box-shadow:
-    0 18px 36px rgba(92, 56, 27, 0.28),
+    0 18px 36px rgba(37, 99, 235, 0.28),
     inset 0 1px rgba(255, 255, 255, 0.3);
   transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
 }
@@ -646,7 +592,7 @@ h1 em {
 .actions button:hover:not(:disabled) {
   transform: translateY(-3px);
   box-shadow:
-    0 24px 46px rgba(92, 56, 27, 0.34),
+    0 24px 46px rgba(37, 99, 235, 0.36),
     inset 0 1px rgba(255, 255, 255, 0.34);
 }
 
@@ -665,12 +611,12 @@ button:disabled {
 .score-panel,
 .main-panel {
   border-radius: 34px;
-  border: 1px solid rgba(93, 64, 39, 0.16);
+  border: 1px solid rgba(59, 130, 246, 0.18);
   background:
-    linear-gradient(145deg, rgba(255, 251, 244, 0.8), rgba(236, 211, 180, 0.52));
+    linear-gradient(145deg, rgba(255, 255, 255, 0.86), rgba(219, 234, 254, 0.6));
   box-shadow:
     inset 0 1px rgba(255, 255, 255, 0.92),
-    0 18px 48px rgba(88, 58, 31, 0.1);
+    0 18px 48px rgba(37, 99, 235, 0.12);
 }
 
 .score-panel {
@@ -681,9 +627,9 @@ button:disabled {
   display: inline-flex;
   padding: 9px 14px;
   border-radius: 999px;
-  background: rgba(239, 224, 204, 0.82);
-  border: 1px solid rgba(127, 87, 50, 0.14);
-  color: #835936;
+  background: rgba(219, 234, 254, 0.88);
+  border: 1px solid rgba(59, 130, 246, 0.18);
+  color: #1d4ed8;
   font-weight: 900;
   font-size: 0.84rem;
   box-shadow: inset 0 1px rgba(255, 255, 255, 0.62);
@@ -694,8 +640,8 @@ button:disabled {
   padding: 26px;
   border-radius: 30px;
   background:
-    radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.9), transparent 58%),
-    linear-gradient(145deg, #fff8eb, #e2bf92);
+    radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.95), transparent 58%),
+    linear-gradient(145deg, #eff6ff, #93c5fd);
   text-align: center;
   box-shadow: inset 0 1px rgba(255, 255, 255, 0.85);
 }
@@ -711,14 +657,14 @@ button:disabled {
   margin-bottom: 16px;
   padding: 14px;
   border-radius: 20px;
-  background: rgba(255, 247, 235, 0.6);
+  background: rgba(239, 246, 255, 0.7);
 }
 
 .progress-label {
   display: flex;
   justify-content: space-between;
   margin-bottom: 10px;
-  color: #765941;
+  color: #31506f;
   font-size: 0.85rem;
   font-weight: 850;
 }
@@ -727,13 +673,13 @@ button:disabled {
   overflow: hidden;
   height: 9px;
   border-radius: 999px;
-  background: #dec5a7;
+  background: #bfdbfe;
 }
 
 .progress-fill {
   height: 100%;
   border-radius: inherit;
-  background: linear-gradient(90deg, #6a4328, #c48b50, #f0cc8d);
+  background: linear-gradient(90deg, #0f172a, #2563eb, #38bdf8);
   transition: width 0.35s ease;
 }
 
@@ -748,18 +694,18 @@ button:disabled {
   justify-content: space-between;
   padding: 17px;
   border-radius: 20px;
-  background: rgba(243, 227, 207, 0.82);
-  border: 1px solid rgba(116, 79, 44, 0.1);
+  background: rgba(219, 234, 254, 0.85);
+  border: 1px solid rgba(59, 130, 246, 0.12);
 }
 
 .stats span {
-  color: #745941;
+  color: #31506f;
   font-weight: 800;
 }
 
 .stats strong {
   font-size: 1.7rem;
-  color: #4b3424;
+  color: #0f2f5f;
 }
 
 .main-panel {
@@ -773,11 +719,11 @@ button:disabled {
   padding: 32px;
   border-radius: 32px;
   background:
-    radial-gradient(circle at 18% 10%, rgba(255, 225, 177, 0.24), transparent 30%),
-    linear-gradient(135deg, #2f2117, #5a3824 48%, #9b6338);
-  color: #fff5e6;
+    radial-gradient(circle at 18% 10%, rgba(125, 211, 252, 0.24), transparent 30%),
+    linear-gradient(135deg, #0f172a, #1e3a8a 48%, #2563eb);
+  color: #eff6ff;
   box-shadow:
-    0 24px 54px rgba(74, 49, 27, 0.24),
+    0 24px 54px rgba(30, 64, 175, 0.26),
     inset 0 1px rgba(255, 255, 255, 0.18);
 }
 
@@ -788,7 +734,7 @@ button:disabled {
   right: -70px;
   bottom: -90px;
   border-radius: 50%;
-  background: rgba(234, 178, 103, 0.22);
+  background: rgba(56, 189, 248, 0.26);
   filter: blur(10px);
 }
 
@@ -804,7 +750,7 @@ button:disabled {
 .speaker-line {
   position: relative;
   margin: 0 0 12px;
-  color: #f4d8b5;
+  color: #bae6fd;
   font-weight: 900;
   text-transform: uppercase;
   letter-spacing: 0.13em;
@@ -825,10 +771,10 @@ button:disabled {
   overflow: hidden;
   margin-top: 20px;
   border-radius: 30px;
-  background: #19120d;
-  border: 1px solid rgba(255, 246, 232, 0.13);
+  background: #07111f;
+  border: 1px solid rgba(219, 234, 254, 0.14);
   box-shadow:
-    0 24px 54px rgba(40, 26, 14, 0.34),
+    0 24px 54px rgba(15, 23, 42, 0.36),
     inset 0 1px rgba(255, 255, 255, 0.1);
 }
 
@@ -837,8 +783,8 @@ button:disabled {
   align-items: center;
   gap: 14px;
   padding: 15px 19px;
-  background: linear-gradient(90deg, #271c14, #332217);
-  color: #d8b98e;
+  background: linear-gradient(90deg, #0f172a, #102a55);
+  color: #93c5fd;
   font-size: 0.82rem;
   font-weight: 900;
   letter-spacing: 0.04em;
@@ -857,13 +803,13 @@ button:disabled {
   width: 12px;
   height: 12px;
   border-radius: 50%;
-  background: #d8b98e;
-  box-shadow: 0 0 18px rgba(216, 185, 142, 0.36);
-  opacity: 0.9;
+  background: #38bdf8;
+  box-shadow: 0 0 18px rgba(56, 189, 248, 0.46);
+  opacity: 0.95;
 }
 
 .lights span:nth-child(2) {
-  opacity: 0.6;
+  opacity: 0.65;
 }
 
 .lights span:nth-child(3) {
@@ -874,12 +820,12 @@ button:disabled {
   height: 260px;
   overflow-y: auto;
   padding: 20px;
-  color: #f7e7cf;
+  color: #dbeafe;
   font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
   font-size: 0.95rem;
   background:
-    radial-gradient(circle at 10% 0%, rgba(214, 163, 97, 0.08), transparent 32%),
-    #19120d;
+    radial-gradient(circle at 10% 0%, rgba(56, 189, 248, 0.1), transparent 32%),
+    #07111f;
 }
 
 .terminal-body::-webkit-scrollbar {
@@ -888,7 +834,7 @@ button:disabled {
 
 .terminal-body::-webkit-scrollbar-thumb {
   border-radius: 999px;
-  background: rgba(216, 185, 142, 0.28);
+  background: rgba(147, 197, 253, 0.28);
 }
 
 .terminal-line {
@@ -897,23 +843,23 @@ button:disabled {
 }
 
 .terminal-line.system {
-  color: #cbb08c;
+  color: #93c5fd;
 }
 
 .terminal-line.input {
-  color: #fff5df;
+  color: #eff6ff;
 }
 
 .terminal-line.success {
-  color: #b9f2c2;
+  color: #a7f3d0;
 }
 
 .terminal-line.error {
-  color: #ffb7a8;
+  color: #fecaca;
 }
 
 .terminal-line.warning {
-  color: #ffe2a0;
+  color: #fde68a;
 }
 
 .terminal-form {
@@ -924,7 +870,7 @@ button:disabled {
 }
 
 .prompt {
-  color: #d8b98e;
+  color: #38bdf8;
   font-weight: 950;
 }
 
@@ -932,13 +878,13 @@ button:disabled {
   flex: 1;
   border: 0;
   outline: 0;
-  color: #fff8eb;
+  color: #eff6ff;
   background: transparent;
   font: inherit;
 }
 
 .terminal input::placeholder {
-  color: rgba(255, 248, 235, 0.34);
+  color: rgba(219, 234, 254, 0.36);
 }
 
 .actions {
@@ -949,11 +895,11 @@ button:disabled {
 }
 
 .actions .ghost {
-  color: #573b29;
-  background: rgba(234, 216, 193, 0.9);
+  color: #0f2f5f;
+  background: rgba(219, 234, 254, 0.95);
   box-shadow:
     inset 0 1px rgba(255, 255, 255, 0.74),
-    0 12px 28px rgba(92, 56, 27, 0.08);
+    0 12px 28px rgba(37, 99, 235, 0.1);
 }
 
 .feedback,
@@ -962,31 +908,31 @@ button:disabled {
   padding: 17px 19px;
   border-radius: 20px;
   font-weight: 900;
-  border: 1px solid rgba(255, 255, 255, 0.42);
+  border: 1px solid rgba(255, 255, 255, 0.44);
   box-shadow: inset 0 1px rgba(255, 255, 255, 0.62);
 }
 
 .feedback.success {
-  background: #dff1d8;
-  color: #345c2c;
+  background: #dcfce7;
+  color: #166534;
 }
 
 .feedback.error {
-  background: #f5d3c7;
-  color: #7a3325;
+  background: #fee2e2;
+  color: #991b1b;
 }
 
 .feedback.warning {
-  background: #f7e7bd;
-  color: #72501e;
+  background: #fef3c7;
+  color: #92400e;
 }
 
 .game-over {
   text-align: center;
   background:
-    radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.86), transparent 58%),
-    #fff3df;
-  color: #4d3524;
+    radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.88), transparent 58%),
+    #eff6ff;
+  color: #0f2f5f;
 }
 
 .trophy {
@@ -996,9 +942,9 @@ button:disabled {
   width: 48px;
   height: 48px;
   border-radius: 50%;
-  color: #fff7e8;
-  background: linear-gradient(145deg, #6f4527, #d8a365);
-  box-shadow: 0 12px 28px rgba(92, 56, 27, 0.2);
+  color: #eff6ff;
+  background: linear-gradient(145deg, #0f172a, #2563eb);
+  box-shadow: 0 12px 28px rgba(37, 99, 235, 0.22);
 }
 
 .game-over h2 {

@@ -1,16 +1,14 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
 import StartView from '../views/StartView.vue'
-import Level2 from '../views/Level2.vue'
+import Levels from '../views/Levels.vue'
 import AlgorithmRoom from '../views/AlgorithmRoom.vue'
 import AlignRoom from '../views/AlignRoom.vue'
-import AlignRoom2 from '../views/AlignRoom2.vue'
 import AntennaRoom from '../views/AntennaRoom.vue'
 import AntiVirus from '../views/AntiVirus.vue'
-import AuroraRoom from '../views/AuroraRoom.vue'
 import BatBar from '../views/BatBar.vue'
 import BlockEscape from '../views/BlockEscape.vue'
-import ChefAITrainingSimulator from '../views/ChefAITrainingSimulator.vue'
+import ElinarichardHeist_omgjord from '../views/ElinarichardHeist_omgjord.vue'
 import ElinaHappy from '../views/ElinaHappy.vue'
 import FogNavigationRoom from '../views/FogNavigationRoom.vue'
 import CipherRoom from '../views/CipherRoom.vue'
@@ -29,10 +27,8 @@ import Nudel from '../views/Nudel.vue'
 import Nokia from '../views/Nokia.vue'
 import SevenElevenEscape from '../views/SevenElevenEscape.vue'
 import Stjarnvaktaren from '../views/Stjarnvaktaren.vue'
-import SushiConveyor from '../views/SushiConveyor.vue' 
 import Rules from '../views/Rules.vue'
 import PacmanSushiRoom from '../views/PacmanSushiRoom.vue'
-import PhaseDrift from '../views/PhaseDrift.vue'
 import Terminal from '../views/Terminal.vue'
 import WordSearchRoom from '../views/WordSearchRoom.vue'
 import YouLose from '../views/YouLose.vue'
@@ -45,6 +41,14 @@ import AvoidFakeElinas from '../views/AvoidFakeElinas.vue'
 import HeartHunt from '../views/HeartHunt.vue'
 import RamlosaHeist from '../views/RamlosaHeist.vue'
 import RamlosaHemligaOperationen from '../views/RamlosaHemligaOperationen.vue'
+import Ragebait_elina_game from '../views/ragebait_elina_game.vue'
+import BedtimeEscape from '../views/BedtimeEscape.vue'
+import Cute_quiz_game_vue from '../views/cute_quiz_game_vue.vue'
+import Login from '../views/Login.vue'
+import SnackSpeedrun from '../views/SnackSpeedrun.vue'
+import OperationRamlosan from '../views/OperationRamlosan.vue'
+import Elektrolabb from '../views/elektrolabb.vue'
+import plattan from '../views/plattan.vue'
 
 
 const router = createRouter({
@@ -61,9 +65,14 @@ const router = createRouter({
       component: Rules,
     },
     {
-      path: '/level-1',
-      name: 'level-1',
-      component: Level2,
+      path: '/login',
+      name: 'login',
+      component: Login,
+    },
+    {
+      path: '/levels',
+      name: 'levels',
+      component: Levels,
     },
     {
       path: '/level-2',
@@ -98,11 +107,6 @@ const router = createRouter({
       name: 'level-8',
       component: RamlosaHeist,
     },
-    {
-      path: '/level-9',
-      name: 'level-9',
-      component: AuroraRoom,
-    },
     {path: '/level-10',
       name: 'level-10',
       component: MouseFollower,
@@ -129,16 +133,6 @@ const router = createRouter({
       path: '/level-15',
       name: 'level-15',
       component: Hallon,
-    },
-    {
-      path: '/level-16',
-      name: 'level-16',
-      component: ChefAITrainingSimulator,   
-    },
-    { 
-      path: '/level-17',
-      name: 'level-17',
-      component: SushiConveyor,
     },
     {
       path: '/level-18',
@@ -170,19 +164,10 @@ const router = createRouter({
       name: 'level-23',
       component: YouLose,
     },
-    { path: '/level-24',
-      name: 'level-24',
-      component: AlignRoom2,
-    },
     {
       path: '/level-25',
       name: 'level-25',
       component: Food,
-    },
-    {
-      path: '/level-27',
-      name: 'level-27',
-      component: PhaseDrift,
     },
     {
       path: '/level-28',
@@ -265,6 +250,46 @@ const router = createRouter({
       name: 'level-50',
       component: ElinaHappy,
     },
+    {
+      path: '/level-51',
+      name: 'level-51',
+      component: ElinarichardHeist_omgjord,
+    },
+    {
+      path: '/level-52',
+      name: 'level-52',
+      component: Ragebait_elina_game,
+    },
+    {
+      path: '/level-53',
+      name: 'level-53',
+      component: BedtimeEscape,
+    },
+    {
+      path: '/level-54',
+      name: 'level-54',
+      component: Cute_quiz_game_vue,
+    },
+    {
+      path: '/level-54',
+      name: 'level-54',
+      component: SnackSpeedrun,
+    },
+     {path: '/level-55',
+      name: 'level-55',
+      component: OperationRamlosan,
+    },
+    {path: '/level-56',
+      name: 'level-56',
+      component: Elektrolabb,
+    },
+    {path: '/level-57',
+      name: 'level-57',
+      component: plattan,
+    },
+
+
+
   ],
 })
 
